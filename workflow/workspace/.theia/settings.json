@@ -1,4 +1,5 @@
 {
     "files.autoSave": "off",
-    "workbench.iconTheme": "theia-file-icons"
+    "workbench.iconTheme": "theia-file-icons",
+    "ai-features.AiEnable.enableAI": true
 }

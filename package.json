@@ -31,6 +31,14 @@
     "build:node-json-vscode": "yarn --cwd project-templates/node-json-vscode install",
     "build:java-emf-eclipse": "yarn --cwd project-templates/java-emf-eclipse install",
     "build:workflow": "yarn --cwd workflow install",
-    "start:workflow": "yarn --cwd workflow/workflow-browser-app start"
+    "start:workflow": "yarn --cwd workflow/workflow-browser-app start",
+    "postinstall": "patch-package"
+  },
+  "devDependencies": {
+    "patch-package": "^8.0.1",
+    "postinstall-postinstall": "^2.1.0"
+  },
+  "resolutions": {
+    "**/nsfw": "2.3.1"
   }
 }
