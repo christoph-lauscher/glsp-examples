@@ -14,7 +14,8 @@
 // SPDX-License-Identifier: EPL-2.0 OR GPL-2.0-only WITH Classpath-exception-2.0
 // *****************************************************************************
 import { inject, injectable } from '@theia/core/shared/inversify';
-import { FrontendApplicationContribution, PreferenceService } from '@theia/core/lib/browser';
+import { FrontendApplicationContribution } from '@theia/core/lib/browser';
+import { PreferenceService } from '@theia/core/lib/common/preferences';
 import { Emitter, MaybePromise, Event, } from '@theia/core';
 import { ContextKeyService, ContextKey } from '@theia/core/lib/browser/context-key-service';
 import { PREFERENCE_NAME_ENABLE_EXPERIMENTAL } from './ai-core-preferences';
@@ -47,7 +48,7 @@ export class AIActivationService implements FrontendApplicationContribution {
     initialize(): MaybePromise<void> {
         this.isExperimentalEnabledKey = this.contextKeyService.createKey(EXPERIMENTAL_AI_CONTEXT_KEY, false);
         this.preferenceService.onPreferenceChanged(e => {
-            if (e.preferenceName === PREFERENCE_NAME_ENABLE_EXPERIMENTAL) {
+            if (e.preferenceName === PREFERENCE_NAME_ENABLE_EXPERIMENTAL && typeof e.newValue === 'boolean') {
                 this.isExperimentalEnabledKey.set(e.newValue);
                 this.onDidChangeExperimental.fire(e.newValue);
             }

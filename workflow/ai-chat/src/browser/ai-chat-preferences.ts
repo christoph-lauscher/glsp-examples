@@ -15,12 +15,11 @@
 // *****************************************************************************
 
 import { AI_CORE_PREFERENCES_TITLE } from '@theia/ai-core/lib/browser/ai-core-preferences';
-import { PreferenceSchema } from '@theia/core/lib/browser/preferences/preference-contribution';
+import { PreferenceSchema } from '@theia/core/lib/common/preferences';
 
 export const DEFAULT_CHAT_AGENT_PREF = 'ai-features.chat.defaultChatAgent';
 
 export const aiChatPreferences: PreferenceSchema = {
-    type: 'object',
     properties: {
         [DEFAULT_CHAT_AGENT_PREF]: {
             type: 'string',

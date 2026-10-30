@@ -14,13 +14,12 @@
 // SPDX-License-Identifier: EPL-2.0 OR GPL-2.0-only WITH Classpath-exception-2.0
 // *****************************************************************************
 
-import { PreferenceSchema } from '@theia/core/lib/browser/preferences/preference-contribution';
+import { PreferenceSchema } from '@theia/core/lib/common/preferences';
 import { AI_CORE_PREFERENCES_TITLE } from '@theia/ai-core/lib/browser/ai-core-preferences';
 
 export const PREF_AI_INLINE_COMPLETION_ENABLE = 'ai-features.codeCompletion.enableCodeCompletion';
 
 export const AICodeCompletionPreferencesSchema: PreferenceSchema = {
-    type: 'object',
     properties: {
         [PREF_AI_INLINE_COMPLETION_ENABLE]: {
             title: AI_CORE_PREFERENCES_TITLE,

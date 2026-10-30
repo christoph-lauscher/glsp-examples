@@ -161,17 +161,17 @@ export class AIEditorManager extends EditorPreviewManager {
     @named(AIEditorSelectionResolver)
     protected readonly resolvers: ContributionProvider<AIEditorSelectionResolver>;
 
-    protected override async revealSelection(widget: EditorWidget, options: EditorOpenerOptions = {}, uri?: URI): Promise<void> {
+    protected override async revealSelection(widget: EditorWidget, uri: URI, options: EditorOpenerOptions = {}): Promise<void> {
         if (!options.selection) {
-            options.selection = await this.resolveSelection(options, widget, uri);
+            options.selection = await this.resolveSelection(widget, options, uri);
         }
-        super.revealSelection(widget, options, uri);
+        super.revealSelection(widget, uri, options);
     }
 
-    protected async resolveSelection(
-        options: EditorOpenerOptions,
+    protected override async resolveSelection(
         widget: EditorWidget,
-        uri: URI | undefined
+        options: EditorOpenerOptions,
+        uri?: URI
     ): Promise<RecursivePartial<Range> | undefined> {
         if (!options.selection) {
             const orderedResolvers = Prioritizeable.prioritizeAllSync(

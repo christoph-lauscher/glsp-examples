@@ -14,7 +14,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  ********************************************************************************/
 import { CreateNodeOperation, getAbsolutePosition } from '@eclipse-glsp/client';
-import { Message } from '@phosphor/messaging/lib';
+import { Message } from '@theia/core/shared/@lumino/messaging';
 
 import { GLSPDiagramWidget } from '@eclipse-glsp/theia-integration';
 import { TreeWidgetSelection } from '@theia/core/lib/browser/tree/tree-widget-selection';

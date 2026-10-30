@@ -1,6 +1,6 @@
 {
   "name": "@eclipse-glsp-examples/workflow-glsp",
-  "version": "2.2.1",
+  "version": "2.8.0",
   "description": "GLSP diagrams for the Workflow DSL",
   "keywords": [
     "glsp",
@@ -39,8 +39,10 @@
     "watch": "tsc -w"
   },
   "dependencies": {
-    "@eclipse-glsp/client": "2.2.1",
-    "balloon-css": "^0.5.0"
+    "@eclipse-glsp/client": "2.8.0",
+    "balloon-css": "^0.5.0",
+    "inversify": "^6.1.3",
+    "reflect-metadata": "^0.2.2"
   },
   "publishConfig": {
     "access": "public"

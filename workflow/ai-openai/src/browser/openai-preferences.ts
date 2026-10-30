@@ -14,7 +14,7 @@
 // SPDX-License-Identifier: EPL-2.0 OR GPL-2.0-only WITH Classpath-exception-2.0
 // *****************************************************************************
 
-import { PreferenceSchema } from '@theia/core/lib/browser/preferences/preference-contribution';
+import { PreferenceSchema } from '@theia/core/lib/common/preferences';
 import { AI_CORE_PREFERENCES_TITLE } from '@theia/ai-core/lib/browser/ai-core-preferences';
 
 export const API_KEY_PREF = 'ai-features.openAiOfficial.openAiApiKey';
@@ -22,7 +22,6 @@ export const MODELS_PREF = 'ai-features.openAiOfficial.officialOpenAiModels';
 export const CUSTOM_ENDPOINTS_PREF = 'ai-features.openAiCustom.customOpenAiModels';
 
 export const OpenAiPreferencesSchema: PreferenceSchema = {
-    type: 'object',
     properties: {
         [API_KEY_PREF]: {
             type: 'string',

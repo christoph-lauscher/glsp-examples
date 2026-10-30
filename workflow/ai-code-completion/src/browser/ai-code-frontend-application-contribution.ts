@@ -16,7 +16,8 @@
 
 import * as monaco from '@theia/monaco-editor-core';
 
-import { FrontendApplicationContribution, PreferenceService } from '@theia/core/lib/browser';
+import { FrontendApplicationContribution } from '@theia/core/lib/browser';
+import { PreferenceService } from '@theia/core/lib/common/preferences';
 import { inject, injectable } from '@theia/core/shared/inversify';
 import { AIActivationService } from '@theia/ai-core/lib/browser';
 import { Disposable } from '@theia/core';
@@ -47,7 +48,7 @@ export class AIFrontendApplicationContribution implements FrontendApplicationCon
         this.toDispose.set(name, handler(enable));
 
         this.preferenceService.onPreferenceChanged(event => {
-            if (event.preferenceName === name) {
+            if (event.preferenceName === name && typeof event.newValue === 'boolean') {
                 this.toDispose.get(name)?.dispose();
                 this.toDispose.set(name, handler(event.newValue && this.activationService.isActive));
             }

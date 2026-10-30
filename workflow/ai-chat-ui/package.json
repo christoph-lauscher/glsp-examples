@@ -1,6 +1,6 @@
 {
   "name": "@theia/ai-chat-ui",
-  "version": "1.52.0",
+  "version": "1.66.0",
   "description": "Theia - AI Chat UI Extension",
   "keywords": [
     "theia-extension"
@@ -31,15 +31,15 @@
     "extends": "../../configs/nyc.json"
   },
   "dependencies": {
-    "@theia/ai-chat": "1.52.0",
-    "@theia/ai-core": "1.52.0",
-    "@theia/core": "1.52.0",
-    "@theia/editor": "1.52.0",
-    "@theia/editor-preview": "1.52.0",
-    "@theia/filesystem": "1.52.0",
-    "@theia/monaco": "1.52.0",
-    "@theia/monaco-editor-core": "1.83.101",
-    "@theia/workspace": "1.52.0",
+    "@theia/ai-chat": "1.66.0",
+    "@theia/ai-core": "1.66.0",
+    "@theia/core": "1.66.0",
+    "@theia/editor": "1.66.0",
+    "@theia/editor-preview": "1.66.0",
+    "@theia/filesystem": "1.66.0",
+    "@theia/monaco": "1.66.0",
+    "@theia/monaco-editor-core": "1.96.302",
+    "@theia/workspace": "1.66.0",
     "minimatch": "^5.1.0",
     "tslib": "^2.6.2",
     "uuid": "^9.0.1"

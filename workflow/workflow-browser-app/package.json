@@ -1,6 +1,6 @@
 {
   "name": "workflow-browser-app",
-  "version": "2.2.1",
+  "version": "2.8.0",
   "private": true,
   "scripts": {
     "bundle": "theia build --mode development",
@@ -9,30 +9,31 @@
     "watch": "theia build --watch --mode development"
   },
   "dependencies": {
-    "@eclipse-glsp-examples/workflow-ai": "2.2.1",
-    "@eclipse-glsp-examples/workflow-theia": "2.2.1",
-    "@theia/ai-chat": "1.52.0",
-    "@theia/ai-chat-ui": "1.52.0",
-    "@theia/ai-code-completion": "1.52.0",
-    "@theia/ai-core": "1.52.0",
-    "@theia/ai-history": "1.52.0",
-    "@theia/ai-openai": "1.52.0",
-    "@theia/ai-terminal": "1.52.0",
-    "@theia/ai-workspace-agent": "1.52.0",
-    "@theia/core": "1.52.0",
-    "@theia/editor": "1.52.0",
-    "@theia/filesystem": "1.52.0",
-    "@theia/markers": "1.52.0",
-    "@theia/messages": "1.52.0",
-    "@theia/monaco": "1.52.0",
-    "@theia/navigator": "1.52.0",
-    "@theia/preferences": "1.52.0",
-    "@theia/process": "1.52.0",
-    "@theia/terminal": "1.52.0",
-    "@theia/workspace": "1.52.0"
+    "@eclipse-glsp-examples/workflow-ai": "2.8.0",
+    "@eclipse-glsp-examples/workflow-theia": "2.8.0",
+    "@theia/ai-chat": "1.66.0",
+    "@theia/ai-chat-ui": "1.66.0",
+    "@theia/ai-code-completion": "1.66.0",
+    "@theia/ai-core": "1.66.0",
+    "@theia/ai-history": "1.66.0",
+    "@theia/ai-openai": "1.66.0",
+    "@theia/ai-terminal": "1.66.0",
+    "@theia/ai-workspace-agent": "1.66.0",
+    "@theia/core": "1.66.0",
+    "@theia/editor": "1.66.0",
+    "@theia/filesystem": "1.66.0",
+    "@theia/markers": "1.66.0",
+    "@theia/messages": "1.66.0",
+    "@theia/monaco": "1.66.0",
+    "@theia/navigator": "1.66.0",
+    "@theia/preferences": "1.66.0",
+    "@theia/process": "1.66.0",
+    "@theia/terminal": "1.66.0",
+    "@theia/workspace": "1.66.0"
   },
   "devDependencies": {
-    "@theia/cli": "1.52.0"
+    "@theia/cli": "1.66.0",
+    "terser-webpack-plugin": "^5.3.10"
   },
   "theia": {
     "target": "browser",

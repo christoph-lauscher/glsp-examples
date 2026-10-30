@@ -59,8 +59,12 @@
     "typescript": "^5.5.3"
   },
   "resolutions": {
+    "**/@vscode/ripgrep": "1.15.14",
     "**/nsfw": "2.3.1",
     "**/node-pty": "1.1.0-beta33"
+  },
+  "overrides": {
+    "@vscode/ripgrep": "1.15.14"
   },
   "engines": {
     "node": ">=16.11.0",

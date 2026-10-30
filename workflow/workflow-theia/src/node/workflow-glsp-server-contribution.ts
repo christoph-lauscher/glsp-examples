@@ -30,7 +30,7 @@ export class WorkflowGLSPSocketServerContribution extends GLSPSocketServerContri
     createContributionOptions(): Partial<GLSPSocketServerContributionOptions> {
         return {
             executable: MODULE_PATH,
-            additionalArgs: ['--no-consoleLog', '--fileLog', 'true', '--logDir', LOG_DIR],
+            additionalArgs: ['--no-consoleLog', '--fileLog', '--logDir', LOG_DIR],
             socketConnectionOptions: {
                 port: getPort(PORT_ARG_KEY, DEFAULT_PORT)
             }

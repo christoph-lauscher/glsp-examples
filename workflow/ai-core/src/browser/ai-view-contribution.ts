@@ -14,7 +14,8 @@
 // SPDX-License-Identifier: EPL-2.0 OR GPL-2.0-only WITH Classpath-exception-2.0
 // *****************************************************************************
 import { CommandRegistry, MenuModelRegistry } from '@theia/core';
-import { AbstractViewContribution, CommonMenus, KeybindingRegistry, PreferenceService, Widget } from '@theia/core/lib/browser';
+import { AbstractViewContribution, CommonMenus, KeybindingRegistry, Widget } from '@theia/core/lib/browser';
+import { PreferenceService } from '@theia/core/lib/common/preferences';
 import { inject, injectable, postConstruct } from '@theia/core/shared/inversify';
 import { AIActivationService, EXPERIMENTAL_AI_CONTEXT_KEY } from './ai-activation-service';
 

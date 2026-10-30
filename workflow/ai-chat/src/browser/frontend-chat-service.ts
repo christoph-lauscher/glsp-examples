@@ -16,7 +16,7 @@
 
 import { inject, injectable } from '@theia/core/shared/inversify';
 import { ChatAgent, ChatServiceImpl, ParsedChatRequest } from '../common';
-import { PreferenceService } from '@theia/core/lib/browser';
+import { PreferenceService } from '@theia/core/lib/common/preferences';
 import { DEFAULT_CHAT_AGENT_PREF } from './ai-chat-preferences';
 
 @injectable()

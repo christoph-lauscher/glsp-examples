@@ -16,6 +16,7 @@
 import 'reflect-metadata';
 
 import { configureELKLayoutModule } from '@eclipse-glsp/layout-elk';
+import { DefaultMcpDiagramModule, NodeMcpServerModule } from '@eclipse-glsp/server-mcp/lib/node';
 import { createAppModule, GModelStorage, Logger, SocketServerLauncher, WebSocketServerLauncher } from '@eclipse-glsp/server/node';
 import { Container } from 'inversify';
 
@@ -39,15 +40,18 @@ async function launch(argv?: string[]): Promise<void> {
     });
 
     const elkLayoutModule = configureELKLayoutModule({ algorithms: ['layered'], layoutConfigurator: WorkflowLayoutConfigurator });
-    const serverModule = new WorkflowServerModule().configureDiagramModule(new WorkflowDiagramModule(() => GModelStorage), elkLayoutModule);
+    const serverModule = new WorkflowServerModule().configureDiagramModule(
+        new WorkflowDiagramModule(() => GModelStorage),
+        elkLayoutModule,
+        new DefaultMcpDiagramModule());           // per-session MCP services
 
     if (options.webSocket) {
         const launcher = appContainer.resolve(WebSocketServerLauncher);
-        launcher.configure(serverModule);
+        launcher.configure(serverModule, new NodeMcpServerModule()); // MCP HTTP server
         await launcher.start({ port: options.port, host: options.host, path: 'workflow' });
     } else {
         const launcher = appContainer.resolve(SocketServerLauncher);
-        launcher.configure(serverModule);
+        launcher.configure(serverModule, new NodeMcpServerModule()); // MCP HTTP server
         await launcher.start({ port: options.port, host: options.host });
     }
 }

@@ -14,8 +14,7 @@
 // SPDX-License-Identifier: EPL-2.0 OR GPL-2.0-only WITH Classpath-exception-2.0
 // *****************************************************************************
 
-import { PreferenceContribution, PreferenceProxy, PreferenceSchema } from '@theia/core/lib/browser';
-import { PreferenceProxyFactory } from '@theia/core/lib/browser/preferences/injectable-preference-proxy';
+import { PreferenceContribution, PreferenceProxy, PreferenceProxyFactory, PreferenceSchema } from '@theia/core/lib/common/preferences';
 import { interfaces } from '@theia/core/shared/inversify';
 
 export const AI_CORE_PREFERENCES_TITLE = '✨ AI Features [Experimental]';
@@ -23,7 +22,6 @@ export const PREFERENCE_NAME_ENABLE_EXPERIMENTAL = 'ai-features.AiEnable.enableA
 export const PREFERENCE_NAME_PROMPT_TEMPLATES = 'ai-features.promptTemplates.promptTemplatesFolder';
 
 export const aiCorePreferenceSchema: PreferenceSchema = {
-    type: 'object',
     properties: {
         [PREFERENCE_NAME_ENABLE_EXPERIMENTAL]: {
             title: AI_CORE_PREFERENCES_TITLE,

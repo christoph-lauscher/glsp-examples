@@ -16,7 +16,7 @@
 
 import { Agent, AIVariableContribution } from '@theia/ai-core/lib/common';
 import { bindContributionProvider } from '@theia/core';
-import { PreferenceContribution } from '@theia/core/lib/browser';
+import { PreferenceContribution } from '@theia/core/lib/common/preferences';
 import { ContainerModule } from '@theia/core/shared/inversify';
 import {
     ChatAgent,

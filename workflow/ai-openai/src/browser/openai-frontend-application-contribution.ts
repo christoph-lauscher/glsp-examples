@@ -14,8 +14,10 @@
 // SPDX-License-Identifier: EPL-2.0 OR GPL-2.0-only WITH Classpath-exception-2.0
 // *****************************************************************************
 
-import { FrontendApplicationContribution, PreferenceService } from '@theia/core/lib/browser';
+import { FrontendApplicationContribution } from '@theia/core/lib/browser';
+import { PreferenceService } from '@theia/core/lib/common/preferences';
 import { inject, injectable } from '@theia/core/shared/inversify';
+import { JSONValue } from '@theia/core/shared/@lumino/coreutils';
 import { OpenAiLanguageModelsManager, OpenAiModelDescription } from '../common';
 import { API_KEY_PREF, CUSTOM_ENDPOINTS_PREF, MODELS_PREF } from './openai-preferences';
 
@@ -45,11 +47,11 @@ export class OpenAiFrontendApplicationContribution implements FrontendApplicatio
             this.prevCustomModels = [...customModels];
 
             this.preferenceService.onPreferenceChanged(event => {
-                if (event.preferenceName === API_KEY_PREF) {
+                if (event.preferenceName === API_KEY_PREF && (typeof event.newValue === 'string' || event.newValue === undefined)) {
                     this.manager.setApiKey(event.newValue);
-                } else if (event.preferenceName === MODELS_PREF) {
+                } else if (event.preferenceName === MODELS_PREF && isStringArray(event.newValue)) {
                     const oldModels = new Set(this.prevModels);
-                    const newModels = new Set(event.newValue as string[]);
+                    const newModels = new Set(event.newValue);
 
                     const modelsToRemove = [...oldModels].filter(model => !newModels.has(model));
                     const modelsToAdd = [...newModels].filter(model => !oldModels.has(model));
@@ -57,7 +59,7 @@ export class OpenAiFrontendApplicationContribution implements FrontendApplicatio
                     this.manager.removeLanguageModels(...modelsToRemove.map(model => `openai/${model}`));
                     this.manager.createOrUpdateLanguageModels(...modelsToAdd.map(createOpenAIModelDescription));
                     this.prevModels = [...event.newValue];
-                } else if (event.preferenceName === CUSTOM_ENDPOINTS_PREF) {
+                } else if (event.preferenceName === CUSTOM_ENDPOINTS_PREF && isCustomModelPreferenceArray(event.newValue)) {
                     const oldModels = createCustomModelDescriptionsFromPreferences(this.prevCustomModels);
                     const newModels = createCustomModelDescriptionsFromPreferences(event.newValue);
 
@@ -75,6 +77,25 @@ export class OpenAiFrontendApplicationContribution implements FrontendApplicatio
             });
         });
     }
+}
+
+function isStringArray(value: JSONValue | undefined): value is string[] {
+    return Array.isArray(value) && value.every((item): item is string => typeof item === 'string');
+}
+
+function isCustomModelPreferenceArray(value: JSONValue | undefined): value is Partial<OpenAiModelDescription>[] {
+    return (
+        Array.isArray(value) &&
+        value.every(
+            (item): item is Partial<OpenAiModelDescription> =>
+                typeof item === 'object' &&
+                item !== null &&
+                !Array.isArray(item) &&
+                (item.id === undefined || typeof item.id === 'string') &&
+                (item.model === undefined || typeof item.model === 'string') &&
+                (item.url === undefined || typeof item.url === 'string')
+        )
+    );
 }
 
 function createOpenAIModelDescription(modelId: string): OpenAiModelDescription {
