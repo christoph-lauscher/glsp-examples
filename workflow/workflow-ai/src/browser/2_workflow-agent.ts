@@ -54,6 +54,10 @@ export const SYSTEM_PROMPT = {
 
 @injectable()
 export class WorkflowAgent2 extends AbstractStreamParsingChatAgent {
+    constructor() {
+        super('Workflow2', [], 'chat');
+    }
+
     override id = 'Workflow2';
     name = 'Workflow2';
     description = 'Simple chat agent for workflow diagrams with access to the diagram.';

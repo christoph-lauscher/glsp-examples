@@ -42,6 +42,8 @@ lib
 
 **/*-browser-app/**
 !**/*-browser-app/package.json
+!workflow/workflow-browser-app/webpack.config.js
+!workflow/workflow-browser-app/inversify-container.js
 
 
 tsconfig.tsbuildinfo

@@ -101,6 +101,10 @@ export class CreateCommandMatcherProvider implements ResponseContentMatcherProvi
 
 @injectable()
 export class WorkflowAgent4 extends AbstractStreamParsingChatAgent {
+    constructor() {
+        super('Workflow4', [], 'chat');
+    }
+
     override id = 'Workflow4';
     name = 'Workflow4';
     description = 'Simple chat agent for workflow diagrams with actionable output.';

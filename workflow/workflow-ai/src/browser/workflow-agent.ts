@@ -24,6 +24,10 @@ import { WorkflowAi } from './tools';
 
 @injectable()
 export class WorkflowAgent extends AbstractStreamParsingChatAgent {
+    constructor() {
+        super('Workflow', [], 'chat');
+    }
+
     override id = 'Workflow';
     name = 'Workflow';
     description = 'This agent supports users in understanding and modifying Workflow diagrams.';

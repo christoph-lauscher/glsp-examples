@@ -14,7 +14,6 @@
 // SPDX-License-Identifier: EPL-2.0 OR GPL-2.0-only WITH Classpath-exception-2.0
 // *****************************************************************************
 
-import { ILogger } from '@theia/core';
 import { ContainerModule } from '@theia/core/shared/inversify';
 import { CodeCompletionAgent, CodeCompletionAgentImpl } from '../common/code-completion-agent';
 import { AIFrontendApplicationContribution } from './ai-code-frontend-application-contribution';
@@ -25,10 +24,6 @@ import { AICodeCompletionPreferencesSchema } from './ai-code-completion-preferen
 import { AICodeInlineCompletionsProvider } from './ai-code-inline-completion-provider';
 
 export default new ContainerModule(bind => {
-    bind(ILogger).toDynamicValue(ctx => {
-        const parentLogger = ctx.container.get<ILogger>(ILogger);
-        return parentLogger.child('code-completion-agent');
-    }).inSingletonScope().whenTargetNamed('code-completion-agent');
     bind(CodeCompletionAgentImpl).toSelf().inSingletonScope();
     bind(CodeCompletionAgent).toService(CodeCompletionAgentImpl);
     bind(Agent).toService(CodeCompletionAgentImpl);
