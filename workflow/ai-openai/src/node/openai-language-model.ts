@@ -88,45 +88,82 @@ export class OpenAiModel implements LanguageModel {
         });
 
         let runnerEnd = false;
+        let pendingError: unknown;
+        const parts: LanguageModelStreamResponsePart[] = [];
+        let resolveNext: ((result: IteratorResult<LanguageModelStreamResponsePart>) => void) | undefined;
+        let rejectNext: ((error: unknown) => void) | undefined;
+        const push = (part: LanguageModelStreamResponsePart): void => {
+            if (resolveNext) {
+                const resolve = resolveNext;
+                resolveNext = undefined;
+                rejectNext = undefined;
+                resolve({ value: part, done: false });
+            } else {
+                parts.push(part);
+            }
+        };
+        const finish = (): void => {
+            runnerEnd = true;
+            resolveNext?.({ value: undefined, done: true });
+            resolveNext = undefined;
+            rejectNext = undefined;
+        };
+        const fail = (error: unknown): void => {
+            runnerEnd = true;
+            pendingError = error;
+            if (rejectNext) {
+                const reject = rejectNext;
+                resolveNext = undefined;
+                rejectNext = undefined;
+                reject(error);
+            }
+        };
 
-        let resolve: (part: LanguageModelStreamResponsePart) => void;
         runner.on('error', error => {
             console.error('Error in OpenAI chat completion stream:', error);
-            runnerEnd = true;
-            resolve({ content: error.message });
+            fail(error);
         });
-        // we need to also listen for the emitted errors, as otherwise any error actually thrown by the API will not be caught
-        runner.emitted('error').then(error => {
-            console.error('Error in OpenAI chat completion stream:', error);
-            runnerEnd = true;
-            resolve({ content: error.message });
-        });
-        runner.emitted('abort').then(() => {
-            // do nothing, as the abort event is only emitted when the runner is aborted by us
-        });
+        runner.emitted('error').then(fail);
         runner.on('message', message => {
             if (message.role === 'tool') {
-                resolve({ tool_calls: [{ id: message.tool_call_id, finished: true, result: this.getCompletionContent(message) }] });
+                push({ tool_calls: [{ id: message.tool_call_id, finished: true, result: this.getCompletionContent(message) }] });
             }
             console.debug('Received Open AI message', JSON.stringify(message));
         });
+        runner.on('chunk', chunk => {
+            if (chunk.choices[0]?.delta) {
+                push({ ...chunk.choices[0].delta });
+            }
+        });
         runner.once('end', () => {
-            runnerEnd = true;
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            resolve(runner.finalChatCompletion as any);
+            push(runner.finalChatCompletion as any);
+            finish();
+        });
+        runner.once('abort', () => {
+            finish();
         });
         const asyncIterator = {
             async *[Symbol.asyncIterator](): AsyncIterator<LanguageModelStreamResponsePart> {
-                runner.on('chunk', chunk => {
-                    if (chunk.choices[0]?.delta) {
-                        resolve({ ...chunk.choices[0]?.delta });
-                    }
-                });
                 while (!runnerEnd) {
-                    const promise = new Promise<LanguageModelStreamResponsePart>((res, rej) => {
-                        resolve = res;
-                    });
-                    yield promise;
+                    if (parts.length > 0) {
+                        yield parts.shift()!;
+                    } else {
+                        const next = await new Promise<IteratorResult<LanguageModelStreamResponsePart>>((resolve, reject) => {
+                            resolveNext = resolve;
+                            rejectNext = reject;
+                        });
+                        if (next.done) {
+                            return;
+                        }
+                        yield next.value;
+                    }
+                }
+                if (pendingError !== undefined) {
+                    throw pendingError;
+                }
+                while (parts.length > 0) {
+                    yield parts.shift()!;
                 }
             }
         };
