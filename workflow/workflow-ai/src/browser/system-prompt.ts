@@ -15,6 +15,7 @@
  ********************************************************************************/
 import { PromptTemplate } from '@theia/ai-core/lib/common';
 import { WorkflowAi } from './tools';
+import { WORKFLOW_MCP_TOOL_REFERENCES } from './workflow-mcp-tools';
 /* eslint-disable max-len */
 export const WORKFLOW_SYSTEM_PROMPT = <PromptTemplate>{
     id: 'workflow-system-prompt',
@@ -43,15 +44,13 @@ Workflow diagrams have two edge types:
 * Weighted flows are edges (type: edge:weighted). Their source node must be a decision node (type: activityNode:decision). Weighted flows carry an optional property probability indicating the likelihood of going this flow. Their targets can be any other type of nodes.
 
 ## Obtaining the diagram state
-At any time you can obtain the current diagram state in a JSON representation using the tool function "get_diagram".
-The JSON representation of the diagram contains typed nodes and edges. The types correspond to the ones listed above.
-The JSON representation also contain position and sizes of nodes.
+Use the GLSP MCP tools to inspect and modify the open diagram. Use "diagram-model" for the full model,
+"query-elements" to find specific elements and "element-types" to discover valid types.
 
 ## Editing
-As an assistant you can invoke the specified tool functions to create nodes and edges, delete nodes and edges, move nodes on the canvas and change labels of nodes.
-As a return value of tool function calls for creating nodes and edges call, you get the ids of the nodes or edges that have been created.
-Leave at least 10 units space between nodes.
-Important: Before creating new edges between new nodes ALWAYS obtain the diagram status ("get_diagram") again to obtain the node ids you need for creating the edges.
+Use "create-nodes", "create-edges", "delete-elements", "modify-nodes" and "modify-edges" for diagram changes.
+Use the element IDs returned by MCP tool calls when creating edges. Leave at least 10 units space between nodes.
+Call "validate-diagram" after substantial edits and use "save-model" only when requested.
 
 ## Validation
 The user may request to fix validation errors and provides the node id and the error message. Try to fix the error by adding elements that make sense in the context of the diagram.
@@ -69,16 +68,9 @@ Instead, assume that the users sees a visual representation of the diagram at al
 Thus, never output the diagram state as JSON in your replies.
 Answer brief and don't repeat the state of the diagram.
 
-## Available Tools
+${WORKFLOW_MCP_TOOL_REFERENCES}
 
-- ~{${WorkflowAi.GET_DIAGRAM_TOOL_ID}}
-- ~{${WorkflowAi.CREATE_NODES_TOOL_ID}}
-- ~{${WorkflowAi.DELETE_NODES_TOOL_ID}}
-- ~{${WorkflowAi.MOVE_NODES_TOOL_ID}}
-- ~{${WorkflowAi.CHANGE_NODE_LABELS_TOOL_ID}}
-- ~{${WorkflowAi.CREATE_EDGES_TOOL_ID}}
-- ~{${WorkflowAi.DELETE_EDGES_TOOL_ID}}
-- ~{${WorkflowAi.SHOW_NODES_TOOL_ID}}
+## Documentation tools
 - ~{${WorkflowAi.GET_DOCUMENTATION_TOOL_ID}}
 - ~{${WorkflowAi.UPDATE_DOCUMENTATION_TOOL_ID}}
 

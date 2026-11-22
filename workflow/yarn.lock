@@ -1104,6 +1104,15 @@
     vscode-jsonrpc "8.2.0"
     ws "^8.17.1"
 
+"@eclipse-glsp/theia-mcp-integration@2.8.0":
+  version "2.8.0"
+  resolved "https://registry.yarnpkg.com/@eclipse-glsp/theia-mcp-integration/-/theia-mcp-integration-2.8.0.tgz#7e95bc2ccffb87f20339733fe4fb2d37506cae86"
+  integrity sha512-6bRhsRfvcdxRczjAu9rshBaApBATOxngkYF8bxQFWVReMTq+VjyQDON8fiOaecfvyo4XiP5/hS7fGqJPmjCBZg==
+  dependencies:
+    "@eclipse-glsp/client" "2.8.0"
+    "@eclipse-glsp/protocol" "2.8.0"
+    "@eclipse-glsp/theia-integration" "2.8.0"
+
 "@eclipse-glsp/ts-config@2.2.1":
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/@eclipse-glsp/ts-config/-/ts-config-2.2.1.tgz#c695dddebb3e00b530346bfbd12622aa90d1ce9f"
@@ -1124,9 +1133,9 @@
   optionalDependencies:
     global-agent "^3.0.0"
 
-"@electron/node-gyp@git+https://github.com/electron/node-gyp.git#06b29aafb7708acef8b3669835c8a7857ebc92d2":
+"@electron/node-gyp@https://github.com/electron/node-gyp#06b29aafb7708acef8b3669835c8a7857ebc92d2":
   version "10.2.0-electron.1"
-  resolved "git+https://github.com/electron/node-gyp.git#06b29aafb7708acef8b3669835c8a7857ebc92d2"
+  resolved "https://github.com/electron/node-gyp#06b29aafb7708acef8b3669835c8a7857ebc92d2"
   dependencies:
     env-paths "^2.2.0"
     exponential-backoff "^3.1.1"
@@ -1520,7 +1529,7 @@
   dependencies:
     cross-spawn "^7.0.1"
 
-"@modelcontextprotocol/sdk@^1.29.0":
+"@modelcontextprotocol/sdk@^1.15.1", "@modelcontextprotocol/sdk@^1.29.0":
   version "1.32.2"
   resolved "https://registry.yarnpkg.com/@modelcontextprotocol/sdk/-/sdk-1.32.2.tgz#6ede940e436998cc20a70092f0af875735bc78f8"
   integrity sha512-SWsVtH/0vULSQStoZ6xxH2K09Li8fXYTMC64ZeogCdpZ3XSi1eCPOByV1OpuJxuI3OcmHhosDWYyii07tpPsLw==
@@ -2163,6 +2172,15 @@
   integrity sha512-4BAffykYOgO+5nzBWYwE3W90sBgLJoUPRWWcL8wlyiM8IB8ipJz3UMJ9KXQd1RKQXpKp8Tutn80HZtWsu2u76w==
   dependencies:
     defer-to-connect "^2.0.0"
+
+"@theia/ai-mcp@1.66.0":
+  version "1.66.0"
+  resolved "https://registry.yarnpkg.com/@theia/ai-mcp/-/ai-mcp-1.66.0.tgz#d2f8a8677ce8fe0470edecde5604c9d5d4eb1aef"
+  integrity sha512-ruig4+J7mt6iL9ApvejU+yn53xS/ZYGcNw+qEP13doYM1y1rMR84JNA5vINPtFWEmfW55umMw/omeRitvjz62w==
+  dependencies:
+    "@modelcontextprotocol/sdk" "^1.15.1"
+    "@theia/ai-core" "1.66.0"
+    "@theia/core" "1.66.0"
 
 "@theia/application-manager@1.66.0":
   version "1.66.0"

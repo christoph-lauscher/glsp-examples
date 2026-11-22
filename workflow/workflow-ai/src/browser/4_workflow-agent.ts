@@ -19,6 +19,7 @@ import { ResponseContentMatcher, ResponseContentMatcherProvider } from '@theia/a
 import { LanguageModelRequirement } from '@theia/ai-core';
 import { inject, injectable } from '@theia/core/shared/inversify';
 import { CreateNodes } from './tools';
+import { WORKFLOW_MCP_TOOL_REFERENCES } from './workflow-mcp-tools';
 
 export const SYSTEM_PROMPT = {
     id: 'workflow-system-prompt4',
@@ -48,28 +49,14 @@ export const SYSTEM_PROMPT = {
     * Weighted flows are edges (type: edge:weighted). Their source node must be a decision node (type: activityNode:decision). Weighted flows carry an optional property probability indicating the likelihood of going this flow. Their targets can be any other type of nodes.
 
     ## Creating elements
-    If you are asked to create elements, generate change commands with the following syntax.
-    Unless specified, come up with reasonable labels. Note that command elements will be rendered as buttons to the user at the same place as the change command element.
-
-    <create>
-    {
-    "type_id": <element-type, e.g. task:manual>,
-    "label": <label of the element>,
-    "position": {
-        "x": <x coordinate>,
-        "y": <y coordinate>
-    }
-    }
-    </create>
-
-    Do not put the <create>-elements in \`\`\` delimiters.
-    Do not put them in enumerations, instead write sentences around them.
+    When asked to create or edit diagram elements, use the GLSP MCP tools. Do not output change commands as text.
+    Discover element types first, inspect the model to avoid overlaps, and use IDs returned by MCP calls when creating edges.
 
     ## Instructions for your replies
     Answer brief and don't repeat the state of the diagram.
     Whenever you refer to a specific node, print them as Markdown links, e.g. [<label>](http://workflow/<element-id>).
 
-    {{workflow}}
+    ${WORKFLOW_MCP_TOOL_REFERENCES}
 `
 };
 

@@ -36,6 +36,7 @@
   "dependencies": {
     "@eclipse-glsp-examples/workflow-glsp": "2.8.0",
     "@eclipse-glsp-examples/workflow-server": "2.8.0",
+    "@eclipse-glsp/theia-mcp-integration": "2.8.0",
     "@eclipse-glsp/theia-integration": "2.8.0",
     "@theia/core": "1.66.0",
     "@theia/editor": "1.66.0",

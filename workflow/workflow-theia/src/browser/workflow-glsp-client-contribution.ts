@@ -36,7 +36,7 @@ export class WorkflowGLSPClientContribution extends BaseGLSPClientContribution {
     protected override async createInitializeParameters(): Promise<McpInitializeParameters> {
         return {
             ...await super.createInitializeParameters(),
-            mcpServer: {}
+            mcpServer: { name: 'glsp-workflow' }
         };
     }
 

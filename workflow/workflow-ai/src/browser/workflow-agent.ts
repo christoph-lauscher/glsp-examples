@@ -15,12 +15,12 @@
  ********************************************************************************/
 import { collectIssueMarkers, GParentElement } from '@eclipse-glsp/client';
 import { AbstractStreamParsingChatAgent, SystemMessageDescription } from '@theia/ai-chat/lib/common';
-import { LanguageModelRequirement, ToolInvocationRegistry } from '@theia/ai-core';
+import { LanguageModelRequirement } from '@theia/ai-core';
 import { CancellationTokenSource } from '@theia/core';
-import { inject, injectable } from '@theia/core/shared/inversify';
+import { injectable } from '@theia/core/shared/inversify';
 import { isParent, SModelElementImpl } from 'sprotty';
 import { WORKFLOW_SYSTEM_PROMPT } from './system-prompt';
-import { WorkflowAi } from './tools';
+import { WORKFLOW_MCP_TOOL_PREFIX } from './workflow-mcp-tools';
 
 @injectable()
 export class WorkflowAgent extends AbstractStreamParsingChatAgent {
@@ -44,9 +44,6 @@ export class WorkflowAgent extends AbstractStreamParsingChatAgent {
         }
     ];
 
-    @inject(ToolInvocationRegistry)
-    protected toolInvocationRegistry: ToolInvocationRegistry;
-
     protected override async getSystemMessageDescription(): Promise<SystemMessageDescription | undefined> {
         const resolvedPrompt = await this.promptService.getPrompt(WORKFLOW_SYSTEM_PROMPT.id);
         return resolvedPrompt ? resolvedPrompt : undefined;
@@ -61,16 +58,23 @@ export class WorkflowAgent extends AbstractStreamParsingChatAgent {
             .flatMap(marker => marker.issues)
             .map(issue => `* ${issue.severity}: ${issue.message}`)
             .join('\n');
+        const systemMessage = await this.getSystemMessageDescription();
+        if (!systemMessage?.functionDescriptions) {
+            throw new Error('Workflow MCP tools are not available');
+        }
+        const mcpTools = [...systemMessage.functionDescriptions.values()].filter(tool => tool.id.startsWith(WORKFLOW_MCP_TOOL_PREFIX));
+        if (mcpTools.length === 0) {
+            throw new Error('Workflow MCP tools are not available');
+        }
         const prompt =
             `Please fix the following issues for element with id ${element.id}:\n${issues}\n\n` +
-            `Don't provide any answer, just use the tools to obtain the diagram state (${WorkflowAi.GET_DIAGRAM_TOOL_ID}) ` +
-            `and apply changes for fixing the issues (${WorkflowAi.CREATE_NODES_TOOL_ID}, etc.).`;
+            'Use the GLSP MCP tools to inspect the diagram and apply the necessary changes. Do not provide a textual answer.';
         await this.callLlm(
             await this.getLanguageModel('workflow-fix'),
             [
                 {
                     actor: 'system',
-                    query: (await this.getSystemMessageDescription())!.text,
+                    query: systemMessage.text,
                     type: 'text'
                 },
                 {
@@ -79,14 +83,7 @@ export class WorkflowAgent extends AbstractStreamParsingChatAgent {
                     type: 'text'
                 }
             ],
-            [
-                this.toolInvocationRegistry.getFunction(WorkflowAi.GET_DIAGRAM_TOOL_ID)!,
-                this.toolInvocationRegistry.getFunction(WorkflowAi.CREATE_NODES_TOOL_ID)!,
-                this.toolInvocationRegistry.getFunction(WorkflowAi.DELETE_NODES_TOOL_ID)!,
-                this.toolInvocationRegistry.getFunction(WorkflowAi.CHANGE_NODE_LABELS_TOOL_ID)!,
-                this.toolInvocationRegistry.getFunction(WorkflowAi.CREATE_EDGES_TOOL_ID)!,
-                this.toolInvocationRegistry.getFunction(WorkflowAi.DELETE_EDGES_TOOL_ID)!
-            ],
+            mcpTools,
             new CancellationTokenSource().token
         );
     }

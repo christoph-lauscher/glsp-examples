@@ -40,6 +40,7 @@ yarn start
 ```
 
 This will launch the example in the browser on [localhost:3000](http://localhost:3000).
+Workflow AI agents use the GLSP MCP tools for diagram operations. Open a workflow diagram to start its MCP server; Theia registers the announced endpoint and makes its tools available to the agents.
 
 It's also possible to start the Theia browser application in external mode. This means the `Workflow` GLSP server will not be started as an embedded process and is expected to be already running. This can be used for debugging purposes, where you first start the GLSP server in debug mode and let the Theia application connect to it:
 

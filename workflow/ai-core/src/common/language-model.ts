@@ -32,13 +32,65 @@ export const isLanguageModelRequestMessage = (obj: unknown): obj is LanguageMode
         'query' in obj &&
         typeof (obj as { query: unknown }).query === 'string'
     );
+export interface ToolRequestParameterProperty {
+    type?: string;
+    anyOf?: ToolRequestParameterProperty[];
+    [key: string]: unknown;
+}
+
+export type ToolRequestParametersProperties = Record<string, ToolRequestParameterProperty>;
+export interface ToolRequestParameters {
+    type?: 'object';
+    properties: ToolRequestParametersProperties;
+    required?: string[];
+}
+
 export interface ToolRequest {
     id: string;
     name: string;
-    parameters?: { type?: 'object', properties: Record<string, { type: string, [key: string]: unknown }> };
+    parameters?: ToolRequestParameters;
     description?: string;
     handler: (arg_string: string) => Promise<unknown>;
+    providerName?: string;
 }
+
+export namespace ToolRequest {
+    function isToolRequestParameterProperty(obj: unknown): obj is ToolRequestParameterProperty {
+        if (!obj || typeof obj !== 'object') {
+            return false;
+        }
+        const record = obj as Record<string, unknown>;
+        if (!('type' in record) && !('anyOf' in record)) {
+            return false;
+        }
+        if ('anyOf' in record && (!Array.isArray(record.anyOf) || !record.anyOf.every(isToolRequestParameterProperty))) {
+            return false;
+        }
+        return !('type' in record) || typeof record.type === 'string';
+    }
+
+    export function isToolRequestParametersProperties(obj: unknown): obj is ToolRequestParametersProperties {
+        return !!obj && typeof obj === 'object' &&
+            Object.entries(obj).every(([key, value]) => typeof key === 'string' && isToolRequestParameterProperty(value));
+    }
+
+    export function isToolRequestParameters(obj: unknown): obj is ToolRequestParameters {
+        return !!obj && typeof obj === 'object' &&
+            (!('type' in obj) || obj.type === 'object') &&
+            'properties' in obj && isToolRequestParametersProperties(obj.properties) &&
+            (!('required' in obj) || (Array.isArray(obj.required) && obj.required.every(prop => typeof prop === 'string')));
+    }
+}
+
+export interface ToolCallTextResult { type: 'text'; text: string }
+export interface ToolCallImageResult { type: 'image'; base64data: string; mimeType: string }
+export interface ToolCallAudioResult { type: 'audio'; data: string; mimeType: string }
+export interface ToolCallErrorResult { type: 'error'; data: string }
+export type ToolCallContentResult = ToolCallTextResult | ToolCallImageResult | ToolCallAudioResult | ToolCallErrorResult;
+export interface ToolCallContent {
+    content: ToolCallContentResult[];
+}
+
 export interface LanguageModelRequest {
     messages: LanguageModelRequestMessage[],
     tools?: ToolRequest[];

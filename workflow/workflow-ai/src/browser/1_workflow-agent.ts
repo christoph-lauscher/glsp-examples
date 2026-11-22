@@ -17,6 +17,7 @@
 import { AbstractStreamParsingChatAgent, SystemMessageDescription } from '@theia/ai-chat/lib/common';
 import { LanguageModelRequirement } from '@theia/ai-core';
 import { injectable } from '@theia/core/shared/inversify';
+import { WORKFLOW_MCP_TOOL_REFERENCES } from './workflow-mcp-tools';
 
 export const SYSTEM_PROMPT = {
     id: 'workflow-system-prompt1',
@@ -47,6 +48,8 @@ export const SYSTEM_PROMPT = {
     
     ## Instructions for your replies
     Answer brief and don't repeat the state of the diagram.
+
+    ${WORKFLOW_MCP_TOOL_REFERENCES}
 `
 };
 

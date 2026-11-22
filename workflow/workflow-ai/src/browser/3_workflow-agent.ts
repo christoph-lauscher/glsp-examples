@@ -22,6 +22,7 @@ import { z } from 'zod';
 import zodToJsonSchema from 'zod-to-json-schema';
 import { GetDocumentation } from './tools';
 import { WorkflowDiagramProvider } from './workflow-diagram-provider';
+import { WORKFLOW_MCP_TOOL_REFERENCES } from './workflow-mcp-tools';
 
 export const CLASSIFICATION_PROMPT = {
     id: 'workflow-classification-prompt',
@@ -194,6 +195,8 @@ export const SYSTEM_PROMPT = {
     
     ## Instructions for your replies
     Answer brief and don't repeat the state of the diagram.
+
+    ${WORKFLOW_MCP_TOOL_REFERENCES}
 `
 };
 

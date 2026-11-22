@@ -29,6 +29,8 @@ export interface ToolInvocationRegistry {
     getFunction(toolId: string): ToolRequest | undefined;
 
     getFunctions(...toolIds: string[]): ToolRequest[];
+
+    unregisterAllTools(providerName: string): void;
 }
 
 export const ToolProvider = Symbol('ToolProvider');
@@ -75,5 +77,12 @@ export class ToolInvocationRegistryImpl implements ToolInvocationRegistry {
         });
         return tools;
     }
-}
 
+    unregisterAllTools(providerName: string): void {
+        for (const [toolId, tool] of this.tools) {
+            if (tool.providerName === providerName) {
+                this.tools.delete(toolId);
+            }
+        }
+    }
+}

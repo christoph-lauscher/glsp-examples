@@ -63,6 +63,8 @@ export interface PromptService {
      * @param prompt the prompt template to store
      */
     storePrompt(id: string, prompt: string): void;
+    addBuiltInPromptFragment(promptFragment: PromptTemplate): void;
+    removePromptFragment(id: string): void;
     /**
      * Return all known prompts as a {@link PromptMap map}.
      */
@@ -209,5 +211,13 @@ export class PromptServiceImpl implements PromptService {
     }
     storePrompt(id: string, prompt: string): void {
         this._prompts[id] = { id, template: prompt };
+    }
+
+    addBuiltInPromptFragment(promptFragment: PromptTemplate): void {
+        this._prompts[promptFragment.id] = promptFragment;
+    }
+
+    removePromptFragment(id: string): void {
+        delete this._prompts[id];
     }
 }
