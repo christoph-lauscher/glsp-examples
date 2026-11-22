@@ -14,7 +14,6 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  ********************************************************************************/
 import { ChatAgent } from '@theia/ai-chat/lib/common';
-import { ResponseContentMatcherProvider } from '@theia/ai-chat/lib/common/response-content-matcher';
 import { Agent, AIVariableContribution, ToolProvider } from '@theia/ai-core/lib/common';
 import { CommandContribution, MenuContribution } from '@theia/core';
 import { ContainerModule } from '@theia/core/shared/inversify';
@@ -23,19 +22,8 @@ import { WorkflowAgent1 } from './1_workflow-agent';
 import { WorkflowAgent2 } from './2_workflow-agent';
 import { WorkflowVariableContribution } from './2_workflow-variable';
 import { ClassificationAgent, WorkflowAgent3 } from './3_workflow-agent';
-import { CreateCommandMatcherProvider, WorkflowAgent4 } from './4_workflow-agent';
-import {
-    ChangeNodeLabels,
-    CreateEdges,
-    CreateNodes,
-    DeleteEdges,
-    DeleteNodes,
-    GetDiagram,
-    GetDocumentation,
-    MoveNodes,
-    ShowNodes,
-    UpdateDocumentation
-} from './tools';
+import { WorkflowAgent4 } from './4_workflow-agent';
+import { GetDocumentation, UpdateDocumentation } from './tools';
 import { WorkflowAgent } from './workflow-agent';
 import { WorkflowDiagramProvider } from './workflow-diagram-provider';
 import { WorkflowFixContribution } from './workflow-fix-contribution';
@@ -46,15 +34,6 @@ export default new ContainerModule(bind => {
     bind(ChatAgent).toService(WorkflowAgent);
 
     bind(WorkflowDiagramProvider).toSelf().inSingletonScope();
-    bind(ToolProvider).to(GetDiagram);
-    bind(CreateNodes).toSelf().inSingletonScope();
-    bind(ToolProvider).toService(CreateNodes);
-    bind(ToolProvider).to(DeleteNodes);
-    bind(ToolProvider).to(MoveNodes);
-    bind(ToolProvider).to(ChangeNodeLabels);
-    bind(ToolProvider).to(CreateEdges);
-    bind(ToolProvider).to(DeleteEdges);
-    bind(ToolProvider).to(ShowNodes);
     bind(GetDocumentation).toSelf().inSingletonScope();
     bind(ToolProvider).toService(GetDocumentation);
     bind(ToolProvider).to(UpdateDocumentation);
@@ -78,7 +57,6 @@ export default new ContainerModule(bind => {
     bind(Agent).toService(WorkflowAgent3);
     bind(ChatAgent).toService(WorkflowAgent3);
 
-    bind(ResponseContentMatcherProvider).to(CreateCommandMatcherProvider).inSingletonScope();
     bind(WorkflowAgent4).toSelf().inSingletonScope();
     bind(Agent).toService(WorkflowAgent4);
     bind(ChatAgent).toService(WorkflowAgent4);

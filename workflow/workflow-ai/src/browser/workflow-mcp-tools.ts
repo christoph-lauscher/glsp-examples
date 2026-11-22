@@ -39,5 +39,11 @@ const workflowMcpToolNames = [
 
 export const WORKFLOW_MCP_TOOL_REFERENCES = `## GLSP MCP tools
 Use these tools to inspect and modify the open workflow diagram. Inspect the current model before editing,
-use returned element IDs when creating edges, and validate significant changes.
+and use only these MCP tools for diagram changes (do not use legacy diagram functions or emit commands as text).
+For create-nodes, pass nodes with elementTypeId, position: { x, y }, and optional text and args fields.
+Use text for the editable name of a named node; use args.dimension for dimensions and args.level for a UN SDG target.
+For create-edges, pass edges with elementTypeId, sourceElementId, and targetElementId.
+Use element-types to confirm type IDs and endpoint compatibility. Use the IDs returned by create-nodes
+when creating edges; do not substitute labels or invent IDs. Check each tool result for errors before continuing,
+and validate significant changes.
 ${workflowMcpToolNames.map(name => `- ~{${WORKFLOW_MCP_TOOL_PREFIX}${name}}`).join('\n')}`;
