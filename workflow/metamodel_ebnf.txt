@@ -1,0 +1,92 @@
+===================== METAMODEL GRAMMAR (EBNF) =====================
+
+model               = { role } , { task } , { capability } ,
+                       { goal } , { domain_sustainability_goal } ,
+                       un_sustainable_development_goal ,
+                       { sustainability_capability } ;
+
+------------------- Core WHO / WHAT / WHY -------------------
+
+role                 = "Role" , name , dimension_who ,
+                        { wants_task } , { wants_capability } ;
+
+task                 = "Task" , name , dimension_what_why ,
+                        { contributes_to_goal } ;
+
+capability           = "Capability" , name , dimension_what ,
+                        { so_that_task } , { contributes_to_goal } ;
+
+------------------- Goal hierarchy (abstract) -------------------
+
+goal                 = hard_goal | soft_goal | domain_sustainability_goal ;
+
+hard_goal            = "Hard_Goal" , name , dimension_what_why ,
+                        { so_that_soft_goal } ;
+
+soft_goal            = "Soft_Goal" , name , dimension_what_why ;
+
+------------------- Sustainability goal hierarchy -------------------
+
+domain_sustainability_goal
+                     = hard_sustainability_goal | soft_sustainability_goal ;
+
+hard_sustainability_goal
+                     = "Hard_Sustainability_Goal" , name , dimension_what_why ,
+                       { contributes_to_soft_sustainability_goal } ,
+                       integrates_one_capability ,     (* multiplicity 1..1 *)
+                       { supports_target } ;
+
+soft_sustainability_goal
+                     = "Soft_Sustainability_Goal" , name , dimension_what_why ,
+                       { contributes_to_soft_sustainability_goal } , (* incl. reflexive *)
+                       { integrates_capability } ,
+                       { supports_target } ;
+
+------------------- UN SDG side -------------------
+
+un_sustainable_development_goal
+                     = "UNSustainable_Development_Goal" ,
+                       { un_sdg_target } ;             (* aggregation: whole contains parts *)
+
+un_sdg_target        = "UNSustainable_Development_Goal_Target" , level ;
+
+sustainability_capability
+                     = "Sustainability_Capability" ,
+                       { integrates_domain_goal } ;
+
+===================== RELATIONSHIPS =====================
+
+wants_task            = card_1_n , "wants/wants_to/needs/can/would_like" , card_0_n , task ;
+wants_capability       = card_1_n , "wants/wants_to/needs/can/would_like" , card_0_n , capability ;
+
+so_that_task           = card_0_n , "so_that" , card_0_n , task ;               (* Capability -> Task *)
+contributes_to_goal    = card_0_n , "so_that/contributes_to" , card_0_n , goal ; (* Task/Capability -> Goal *)
+so_that_soft_goal      = card_0_n , "so_that" , card_0_n , soft_goal ;          (* Hard_Goal -> Soft_Goal *)
+
+contributes_to_soft_sustainability_goal
+                     = card_0_n , "contributes_to" , card_0_n , soft_sustainability_goal ;
+
+supports_target        = card_0_n , "supports" , card_0_n , un_sdg_target ;
+
+integrates_domain_goal  = card_0_n , "integrates" , card_0_n , domain_sustainability_goal ;
+integrates_capability   = card_0_n , "integrates" , card_0_n , sustainability_capability ;
+integrates_one_capability
+                     = card_1_1 , "integrates" , card_0_n , sustainability_capability ;
+
+===================== PRIMITIVES =====================
+
+name                 = "name" , ":" , string_type ;
+
+dimension_who        = "dimension" , ":" , string_type , "=" , "WHO" ;
+dimension_what       = "dimension" , ":" , string_type , "=" , "WHAT" ;
+dimension_what_why   = "dimension" , ":" , enum_what_why ;
+enum_what_why        = "WHAT" | "WHY" ;
+
+level                = "level" , ":" , enum_level ;
+enum_level           = "Strong" | "Moderate" | "Indirect" ;
+
+card_0_n             = "0" , ".." , "n" ;
+card_1_n             = "1" , ".." , "n" ;
+card_1_1             = "1" , ".." , "1" ;
+
+string_type          = ? any sequence of characters ? ;
