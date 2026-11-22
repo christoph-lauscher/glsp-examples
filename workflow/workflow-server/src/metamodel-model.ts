@@ -48,6 +48,10 @@ export class MetamodelNodeBuilder<T extends MetamodelNode = MetamodelNode> exten
         return this.addLabel(text, labelType);
     }
 
+    typeLabel(text: string): this {
+        return this.addLabel(text, ModelTypes.LABEL_METAMODEL_TYPE);
+    }
+
     protected addLabel(text: string, type: string): this {
         this.proxy.children.push(
             new GLabelBuilder(GLabel)

@@ -93,11 +93,36 @@ export class MetamodelLabelProvider implements McpLabelProvider {
 }
 
 function findLabel(element: GModelElement): GLabel | undefined {
+    const preferredLabelType =
+        element.type === ModelTypes.UN_SDG_TARGET
+            ? ModelTypes.LABEL_SDG_LEVEL
+            : ModelTypes.NAMED_NODE_TYPES.includes(element.type) || ModelTypes.METAMODEL_EDGE_TYPES.includes(element.type)
+              ? ModelTypes.LABEL_METAMODEL
+              : undefined;
+    if (preferredLabelType) {
+        const preferredLabel = findLabelByType(element, preferredLabelType);
+        if (preferredLabel) {
+            return preferredLabel;
+        }
+    }
     for (const child of element.children) {
         if (child instanceof GLabel) {
             return child;
         }
         const label = findLabel(child);
+        if (label) {
+            return label;
+        }
+    }
+    return undefined;
+}
+
+function findLabelByType(element: GModelElement, type: string): GLabel | undefined {
+    for (const child of element.children) {
+        if (child instanceof GLabel && child.type === type) {
+            return child;
+        }
+        const label = findLabelByType(child, type);
         if (label) {
             return label;
         }

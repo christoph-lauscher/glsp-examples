@@ -25,6 +25,7 @@ export class WorkflowDiagramConfiguration implements DiagramConfiguration {
         const mapping = getDefaultMapping();
         mapping.set(types.LABEL_METAMODEL, GLabel);
         mapping.set(types.LABEL_METAMODEL_DISPLAY, GLabel);
+        mapping.set(types.LABEL_METAMODEL_TYPE, GLabel);
         mapping.set(types.LABEL_SDG_LEVEL, GLabel);
         types.METAMODEL_NODE_TYPES.forEach(type => mapping.set(type, MetamodelNode));
         types.METAMODEL_EDGE_TYPES.forEach(type => mapping.set(type, GEdge));

@@ -91,6 +91,7 @@ export const workflowDiagramModule = new FeatureModule(
         METAMODEL_NODE_TYPES.forEach(type => configureModelElement(context, type, GNode, RectangularNodeView));
         configureModelElement(context, 'label:metamodel', GLabel, GLabelView, { enable: [editLabelFeature] });
         configureModelElement(context, 'label:metamodel-display', GLabel, GLabelView);
+        configureModelElement(context, 'label:metamodel-type', GLabel, GLabelView);
         configureModelElement(context, 'label:sdg-level', GLabel, GLabelView);
         overrideModelElement(context, DefaultTypes.EDGE, GEdge, WorkflowEdgeView);
         METAMODEL_EDGE_TYPES.forEach(type => configureModelElement(context, type, GEdge, WorkflowEdgeView));

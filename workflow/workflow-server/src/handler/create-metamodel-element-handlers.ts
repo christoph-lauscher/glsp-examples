@@ -44,7 +44,10 @@ export class CreateMetamodelNodeHandler extends CreateWorkflowNodeOperationHandl
         const builder = MetamodelNode.builder()
             .type(type)
             .position(relativeLocation ?? Point.ORIGIN)
-            .addCssClass('metamodel-element');
+            .size(220, 90)
+            .layout('vbox')
+            .addCssClass('metamodel-element')
+            .addCssClass(`metamodel-${type.toLowerCase().replace(/_/g, '-')}`);
 
         if (type === ModelTypes.ROLE) {
             builder.dimension('WHO');
@@ -78,6 +81,7 @@ export class CreateMetamodelNodeHandler extends CreateWorkflowNodeOperationHandl
                     ? requestedLevel
                     : 'Strong'
                 : type.replace(/_/g, ' ');
+        builder.typeLabel(type.replace(/_/g, ' '));
         if (ModelTypes.NAMED_NODE_TYPES.includes(type)) {
             builder.name(typeof name === 'string' ? name.trim() : defaultName);
         } else {

@@ -44,6 +44,52 @@
     fill: #f0f3f8;
 }
 
+.sprotty-label.metamodel-type {
+    font-weight: normal;
+    font-size: 0.7em;
+    fill: #263238;
+}
+
+.metamodel-role > .sprotty-node {
+    fill: #a8d8ea;
+}
+
+.metamodel-task > .sprotty-node {
+    fill: #f6c6a8;
+}
+
+.metamodel-capability > .sprotty-node {
+    fill: #c7e9b0;
+}
+
+.metamodel-hard-goal > .sprotty-node {
+    fill: #f4d06f;
+}
+
+.metamodel-soft-goal > .sprotty-node {
+    fill: #cdb4db;
+}
+
+.metamodel-hard-sustainability-goal > .sprotty-node {
+    fill: #9bd3ae;
+}
+
+.metamodel-soft-sustainability-goal > .sprotty-node {
+    fill: #b8e0d2;
+}
+
+.metamodel-unsustainable-development-goal > .sprotty-node {
+    fill: #f2a7a0;
+}
+
+.metamodel-unsustainable-development-goal-target > .sprotty-node {
+    fill: #f7d6a0;
+}
+
+.metamodel-sustainability-capability > .sprotty-node {
+    fill: #9ec5e5;
+}
+
 .icon path {
     stroke-width: 0;
     fill: #f0f3f8;

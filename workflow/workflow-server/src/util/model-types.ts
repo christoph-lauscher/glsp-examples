@@ -74,6 +74,7 @@ export namespace ModelTypes {
 
     export const LABEL_METAMODEL = 'label:metamodel';
     export const LABEL_METAMODEL_DISPLAY = 'label:metamodel-display';
+    export const LABEL_METAMODEL_TYPE = 'label:metamodel-type';
     export const LABEL_SDG_LEVEL = 'label:sdg-level';
 
     export interface MetamodelEdgeDefinition {
