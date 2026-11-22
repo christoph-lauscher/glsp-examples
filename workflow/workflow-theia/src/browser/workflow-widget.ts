@@ -38,7 +38,7 @@ export class WorkflowDiagramWidget extends GLSPDiagramWidget {
         if (selectedFilePaths.length > 0) {
             event.stopPropagation();
             const position = getAbsolutePosition(this.editorContext.modelRoot, event);
-            this.actionDispatcher.dispatch(CreateNodeOperation.create('task:automated', { location: position }));
+            this.actionDispatcher.dispatch(CreateNodeOperation.create('Task', { location: position }));
         }
     }
 

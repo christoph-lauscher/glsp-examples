@@ -19,12 +19,12 @@ import {
     DEFAULT_ALIGNABLE_ELEMENT_FILTER,
     DefaultTypes,
     DeleteElementContextMenuItemProvider,
-    DiamondNodeView,
     FeatureModule,
     GCompartment,
     GCompartmentView,
     GEdge,
     GGraph,
+    GNode,
     GLSPProjectionView,
     GLabel,
     GLabelView,
@@ -32,8 +32,6 @@ import {
     LogLevel,
     RectangularNodeView,
     RevealNamedElementActionProvider,
-    RoundedCornerNodeView,
-    StructureCompartmentView,
     TYPES,
     bindAsService,
     bindOrRebind,
@@ -50,12 +48,35 @@ import 'balloon-css/balloon.min.css';
 import { Container } from 'inversify';
 import 'sprotty/css/edit-label.css';
 import '../css/diagram.css';
-import { taskEditorModule } from './direct-task-editing/task-editor-module';
-import { filterModule } from './filter/di.config';
-import { BranchingNode, CategoryNode, Icon, SynchronizationNode, TaskNode, WeightedEdge } from './model';
 import { WorkflowSnapper } from './workflow-snapper';
 import { WorkflowStartup } from './workflow-startup';
-import { IconView, WorkflowEdgeView } from './workflow-views';
+import { WorkflowEdgeView } from './workflow-views';
+
+const METAMODEL_NODE_TYPES = [
+    'Role',
+    'Task',
+    'Capability',
+    'Hard_Goal',
+    'Soft_Goal',
+    'Hard_Sustainability_Goal',
+    'Soft_Sustainability_Goal',
+    'UNSustainable_Development_Goal',
+    'UNSustainable_Development_Goal_Target',
+    'Sustainability_Capability'
+];
+
+const METAMODEL_EDGE_TYPES = [
+    'wants_task',
+    'wants_capability',
+    'so_that_task',
+    'contributes_to_goal',
+    'so_that_soft_goal',
+    'contributes_to_soft_sustainability_goal',
+    'supports_target',
+    'integrates_domain_goal',
+    'integrates_capability',
+    'contains_target'
+];
 
 export const workflowDiagramModule = new FeatureModule(
     (bind, unbind, isBound, rebind) => {
@@ -67,27 +88,19 @@ export const workflowDiagramModule = new FeatureModule(
         bindAsService(context, TYPES.IContextMenuItemProvider, DeleteElementContextMenuItemProvider);
 
         configureDefaultModelElements(context);
-        configureModelElement(context, 'task:automated', TaskNode, RoundedCornerNodeView);
-        configureModelElement(context, 'task:manual', TaskNode, RoundedCornerNodeView);
+        METAMODEL_NODE_TYPES.forEach(type => configureModelElement(context, type, GNode, RectangularNodeView));
+        configureModelElement(context, 'label:metamodel', GLabel, GLabelView, { enable: [editLabelFeature] });
+        configureModelElement(context, 'label:metamodel-display', GLabel, GLabelView);
+        configureModelElement(context, 'label:sdg-level', GLabel, GLabelView);
+        overrideModelElement(context, DefaultTypes.EDGE, GEdge, WorkflowEdgeView);
+        METAMODEL_EDGE_TYPES.forEach(type => configureModelElement(context, type, GEdge, WorkflowEdgeView));
+        overrideModelElement(context, DefaultTypes.GRAPH, GGraph, GLSPProjectionView);
         configureModelElement(context, 'label:heading', GLabel, GLabelView, { enable: [editLabelFeature] });
         configureModelElement(context, 'comp:comp', GCompartment, GCompartmentView);
-        configureModelElement(context, 'label:icon', GLabel, GLabelView);
-        overrideModelElement(context, DefaultTypes.EDGE, GEdge, WorkflowEdgeView);
-        configureModelElement(context, 'edge:weighted', WeightedEdge, WorkflowEdgeView);
-        configureModelElement(context, 'icon', Icon, IconView);
-        configureModelElement(context, 'activityNode:merge', BranchingNode, DiamondNodeView);
-        configureModelElement(context, 'activityNode:decision', BranchingNode, DiamondNodeView);
-        configureModelElement(context, 'activityNode:fork', SynchronizationNode, RectangularNodeView);
-        configureModelElement(context, 'activityNode:join', SynchronizationNode, RectangularNodeView);
-        overrideModelElement(context, DefaultTypes.GRAPH, GGraph, GLSPProjectionView);
-        configureModelElement(context, 'category', CategoryNode, RoundedCornerNodeView);
-        configureModelElement(context, 'struct', GCompartment, StructureCompartmentView);
 
         bind<IHelperLineOptions>(TYPES.IHelperLineOptions).toDynamicValue(ctx => {
             const options: IHelperLineOptions = {};
-            // skip icons for alignment as well as compartments which are only used for structure
-            options.alignmentElementFilter = element =>
-                DEFAULT_ALIGNABLE_ELEMENT_FILTER(element) && !(element instanceof Icon) && !(element instanceof GCompartment);
+            options.alignmentElementFilter = element => DEFAULT_ALIGNABLE_ELEMENT_FILTER(element) && !(element instanceof GCompartment);
             return options;
         });
 
@@ -104,8 +117,6 @@ export function createWorkflowDiagramContainer(...containerConfiguration: Contai
 export function initializeWorkflowDiagramContainer(container: Container, ...containerConfiguration: ContainerConfiguration): Container {
     return initializeDiagramContainer(
         container,
-        taskEditorModule,
-        filterModule,
         helperLineModule,
         gridModule,
         debugModule,

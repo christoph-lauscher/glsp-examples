@@ -1,7 +1,7 @@
 # Eclipse GLSP - Workflow Example
 
 This example shows a consistent example provided by all GLSP components.
-It implements a simple flow chart diagram editor with different types of nodes and edges.
+It implements a diagram editor for the Role/Task/Capability and sustainability-goal metamodel.
 The `Workflow Example` is the main example used for development and integrates all GLSP features.
 
 <https://user-images.githubusercontent.com/588090/154459938-849ca684-11b3-472c-8a59-98ea6cb0b4c1.mp4>
@@ -41,6 +41,13 @@ yarn start
 
 This will launch the example in the browser on [localhost:3000](http://localhost:3000).
 Workflow AI agents use the GLSP MCP tools for diagram operations. Open a workflow diagram to start its MCP server; Theia registers the announced endpoint and makes its tools available to the agents.
+
+The diagram supports the node types `Role`, `Task`, `Capability`, `Hard_Goal`, `Soft_Goal`,
+`Hard_Sustainability_Goal`, `Soft_Sustainability_Goal`, `UNSustainable_Development_Goal`,
+`UNSustainable_Development_Goal_Target`, and `Sustainability_Capability`. Relationship types,
+endpoint constraints, dimensions, and target levels are available through the MCP
+`element-types` tool. Validation checks the single UN SDG, Role relationships, and the required
+single capability integration for each Hard Sustainability Goal.
 
 It's also possible to start the Theia browser application in external mode. This means the `Workflow` GLSP server will not be started as an embedded process and is expected to be already running. This can be used for debugging purposes, where you first start the GLSP server in debug mode and let the Theia application connect to it:
 

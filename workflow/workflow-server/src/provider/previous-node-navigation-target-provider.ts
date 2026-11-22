@@ -13,16 +13,15 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  ********************************************************************************/
-import { GEdge } from '@eclipse-glsp/graph';
-import { TaskNode } from '../graph-extension';
+import { GEdge, GNode } from '@eclipse-glsp/graph';
 import { AbstractNextOrPreviousNavigationTargetProvider } from './abstract-next-or-previous-navigation-target-provider';
 import { injectable } from 'inversify';
 
 @injectable()
 export class PreviousNodeNavigationTargetProvider extends AbstractNextOrPreviousNavigationTargetProvider {
     targetTypeId = 'previous';
-    protected getEdges(taskNode: TaskNode): GEdge[] {
-        return this.modelState.index.getIncomingEdges(taskNode);
+    protected getEdges(node: GNode): GEdge[] {
+        return this.modelState.index.getIncomingEdges(node);
     }
 
     protected getSourceOrTarget(edge: GEdge): string {

@@ -14,9 +14,9 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  ********************************************************************************/
 import { NavigationTarget } from '@eclipse-glsp/protocol';
-import { ModelState, NavigationTargetResolution, NavigationTargetResolver } from '@eclipse-glsp/server';
+import { GLabel, ModelState, NavigationTargetResolution, NavigationTargetResolver } from '@eclipse-glsp/server';
 import { inject, injectable } from 'inversify';
-import { TaskNode } from '../graph-extension';
+import { ModelTypes } from '../util/model-types';
 
 @injectable()
 export class WorkflowNavigationTargetResolver extends NavigationTargetResolver {
@@ -26,8 +26,8 @@ export class WorkflowNavigationTargetResolver extends NavigationTargetResolver {
     async resolve(navigationTarget: NavigationTarget): Promise<NavigationTargetResolution> {
         if (navigationTarget.args && navigationTarget.args['name']) {
             const name = navigationTarget.args['name'];
-            const taskNodes = this.modelState.index.getAllByClass<TaskNode>(TaskNode);
-            const element = taskNodes.find(node => name === node.name);
+            const taskNodes = this.modelState.index.getElements(ModelTypes.TASK_ENTITY);
+            const element = taskNodes.find(node => node.children.some(child => child instanceof GLabel && name === child.text));
             if (element) {
                 return new NavigationTargetResolution([element.id]);
             }

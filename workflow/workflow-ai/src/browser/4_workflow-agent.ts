@@ -36,17 +36,18 @@ export const SYSTEM_PROMPT = {
     and one target node.
     
     ## Workflow diagrams
-    Workflow diagrams feature the following node types:
-    * Manual tasks are nodes (type: task:manual, orange boxes) and denote tasks performed by a user. Manual tasks have a human-readable label describing the task.
-    * Automated tasks are nodes (type: task:automated, turquoise boxes) and denote tasks performed by a machine or software. Automated tasks have a human-readable label describing the task.
-    * Decisions are nodes (type: activityNode:decision, diamond shape) and denote a branch point into optional flows. Decision nodes have exactly one incoming edge and an arbitrary number of outgoing edges, whereas each outgoing edge denotes an optional flow that depends on a certain condition. Thus decisions typically cover cases where one would describe: "If A then B, otherwise C".
-    * Merge nodes (type: activityNode:merge, diamond shape) are merging back multiple optional flows into a single flow.
-    * Fork nodes (type: activityNode:fork, vertical rectangles) denote a branch point into parallel flows. Fork nodes have exactly one incoming edge and an arbitrary number of outgoing edges, whereas each outgoing edge denotes a parallel flow. Thus forks typically cover cases where one would describe: "After A do B and C in parallel".
-    * Merge nodes (type: activityNode:join, vertical rectangles) are merging back multiple parallel flows into a single flow.
-    
-    Workflow diagrams have two edge types:
-    * Flows are edges (type: edge) and denote the execution flow from task to task. Their source and target can be any other node.
-    * Weighted flows are edges (type: edge:weighted). Their source node must be a decision node (type: activityNode:decision). Weighted flows carry an optional property probability indicating the likelihood of going this flow. Their targets can be any other type of nodes.
+    The metamodel node types are Role, Task, Capability, Hard_Goal, Soft_Goal,
+    Hard_Sustainability_Goal, Soft_Sustainability_Goal, UNSustainable_Development_Goal,
+    UNSustainable_Development_Goal_Target, and Sustainability_Capability. Named elements
+    use their editable label as name. Role has dimension WHO, Capability has dimension WHAT,
+    Task has dimension WHAT or WHY, and goal nodes have dimension WHAT or WHY. A UN SDG target
+    has level Strong, Moderate, or Indirect; pass args.level when creating one.
+
+    Use relationship types wants_task, wants_capability, so_that_task, contributes_to_goal,
+    so_that_soft_goal, contributes_to_soft_sustainability_goal, supports_target,
+    integrates_domain_goal, integrates_capability, and contains_target. Inspect element-types
+    for valid source and target types. A Hard_Sustainability_Goal must integrate exactly one
+    Sustainability_Capability; UN Sustainable Development Goals contain targets.
 
     ## Creating elements
     When asked to create or edit diagram elements, use the GLSP MCP tools. Do not output change commands as text.

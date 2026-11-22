@@ -19,6 +19,32 @@ import { getDiagramWidget, GLSPDiagramWidget } from '@eclipse-glsp/theia-integra
 import { ApplicationShell } from '@theia/core/lib/browser';
 import { inject, injectable } from '@theia/core/shared/inversify';
 
+const METAMODEL_NODE_TYPES = [
+    'Role',
+    'Task',
+    'Capability',
+    'Hard_Goal',
+    'Soft_Goal',
+    'Hard_Sustainability_Goal',
+    'Soft_Sustainability_Goal',
+    'UNSustainable_Development_Goal',
+    'UNSustainable_Development_Goal_Target',
+    'Sustainability_Capability'
+];
+
+const METAMODEL_EDGE_TYPES = [
+    'wants_task',
+    'wants_capability',
+    'so_that_task',
+    'contributes_to_goal',
+    'so_that_soft_goal',
+    'contributes_to_soft_sustainability_goal',
+    'supports_target',
+    'integrates_domain_goal',
+    'integrates_capability',
+    'contains_target'
+];
+
 @injectable()
 export class WorkflowDiagramProvider {
     @inject(ApplicationShell)
@@ -60,55 +86,39 @@ export class WorkflowDiagramProvider {
         }
 
         function processElement(node: any): any | null {
-            if (
-                ![
-                    'task:manual',
-                    'task:automated',
-                    'activityNode:decision',
-                    'activityNode:merge',
-                    'activityNode:fork',
-                    'activityNode:join',
-                    'edge',
-                    'edge:weighted'
-                ].includes(node.type)
-            ) {
+            if (!METAMODEL_NODE_TYPES.includes(node.type) && !METAMODEL_EDGE_TYPES.includes(node.type)) {
                 // eslint-disable-next-line no-null/no-null
                 return null;
             }
 
             // Process edge type directly
-            if (node.type === 'edge' || node.type === 'edge:weighted') {
+            if (METAMODEL_EDGE_TYPES.includes(node.type)) {
                 return {
                     id: node.id,
                     type: node.type,
                     sourceId: node.sourceId,
-                    targetId: node.targetId
+                    targetId: node.targetId,
+                    label: node.children?.find(
+                        (child: any) => child.type === 'label:metamodel' || child.type === 'label:sdg-level'
+                    )?.text
                 };
             }
 
-            // Process other node types and look for label:heading
+            // Read the displayed metamodel label and its domain attributes.
             const newNode = {
                 type: node.type,
                 id: node.id,
-                label: undefined,
-                position: undefined,
-                size: undefined
+                label: node.children?.find(
+                    (child: any) =>
+                        child.type === 'label:metamodel' ||
+                        child.type === 'label:sdg-level' ||
+                        child.type === 'label:metamodel-display'
+                )?.text,
+                position: node.position,
+                size: node.size,
+                dimension: node.dimension,
+                level: node.level
             };
-            if (node.children) {
-                for (const child of node.children) {
-                    if (child.type === 'label:heading') {
-                        newNode.label = child.text;
-                        break;
-                    }
-                }
-            }
-            if (node.position) {
-                newNode.position = node.position;
-            }
-            if (node.size) {
-                newNode.size = node.size;
-            }
-
             return newNode;
         }
         const convertedModel = {

@@ -13,104 +13,47 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  ********************************************************************************/
-import { DefaultTypes, EdgeTypeHint, ShapeTypeHint } from '@eclipse-glsp/protocol';
-import {
-    DiagramConfiguration,
-    GCompartment,
-    GEdge,
-    GLabel,
-    GModelElementConstructor,
-    ServerLayoutKind,
-    getDefaultMapping
-} from '@eclipse-glsp/server';
+import { EdgeTypeHint, ShapeTypeHint } from '@eclipse-glsp/protocol';
+import { DiagramConfiguration, GEdge, GLabel, GModelElementConstructor, ServerLayoutKind, getDefaultMapping } from '@eclipse-glsp/server';
 import { injectable } from 'inversify';
-import { ActivityNode, Category, TaskNode } from './graph-extension';
+import { MetamodelNode } from './metamodel-model';
 import { ModelTypes as types } from './util/model-types';
 
 @injectable()
 export class WorkflowDiagramConfiguration implements DiagramConfiguration {
     get typeMapping(): Map<string, GModelElementConstructor> {
         const mapping = getDefaultMapping();
-        mapping.set(types.LABEL_HEADING, GLabel);
-        mapping.set(types.LABEL_TEXT, GLabel);
-        mapping.set(types.COMP_HEADER, GCompartment);
-        mapping.set(types.LABEL_ICON, GLabel);
-        mapping.set(types.WEIGHTED_EDGE, GEdge);
-        mapping.set(types.ICON, GCompartment);
-        mapping.set(types.ACTIVITY_NODE, ActivityNode);
-        mapping.set(types.TASK, TaskNode);
-        mapping.set(types.CATEGORY, Category);
-        mapping.set(types.STRUCTURE, GCompartment);
+        mapping.set(types.LABEL_METAMODEL, GLabel);
+        mapping.set(types.LABEL_METAMODEL_DISPLAY, GLabel);
+        mapping.set(types.LABEL_SDG_LEVEL, GLabel);
+        types.METAMODEL_NODE_TYPES.forEach(type => mapping.set(type, MetamodelNode));
+        types.METAMODEL_EDGE_TYPES.forEach(type => mapping.set(type, GEdge));
         return mapping;
     }
 
     get shapeTypeHints(): ShapeTypeHint[] {
-        return [
-            createDefaultShapeTypeHint(types.MANUAL_TASK),
-            createDefaultShapeTypeHint(types.AUTOMATED_TASK),
-            createDefaultShapeTypeHint({ elementTypeId: types.FORK_NODE, resizable: false }),
-            createDefaultShapeTypeHint({ elementTypeId: types.JOIN_NODE, resizable: false }),
-            createDefaultShapeTypeHint(types.DECISION_NODE),
-            createDefaultShapeTypeHint(types.MERGE_NODE),
-            createDefaultShapeTypeHint({
-                elementTypeId: types.CATEGORY,
-                containableElementTypeIds: [types.TASK, types.ACTIVITY_NODE, types.CATEGORY]
-            })
-        ];
+        return types.METAMODEL_NODE_TYPES.map(elementTypeId => ({
+            elementTypeId,
+            repositionable: true,
+            deletable: true,
+            resizable: true,
+            reparentable: true
+        }));
     }
 
     get edgeTypeHints(): EdgeTypeHint[] {
-        return [
-            createDefaultEdgeTypeHint(DefaultTypes.EDGE),
-            createDefaultEdgeTypeHint({
-                elementTypeId: types.WEIGHTED_EDGE,
-                dynamic: true,
-                sourceElementTypeIds: [types.ACTIVITY_NODE],
-                targetElementTypeIds: [types.TASK, types.ACTIVITY_NODE]
-            })
-        ];
+        return types.METAMODEL_EDGES.map(edge => ({
+            elementTypeId: edge.id,
+            dynamic: true,
+            repositionable: true,
+            deletable: true,
+            routable: true,
+            sourceElementTypeIds: edge.sourceTypes,
+            targetElementTypeIds: edge.targetTypes
+        }));
     }
 
     layoutKind = ServerLayoutKind.MANUAL;
     needsClientLayout = true;
     animatedUpdate = true;
-}
-
-export function createDefaultShapeTypeHint(template: { elementTypeId: string } & Partial<ShapeTypeHint>): ShapeTypeHint;
-export function createDefaultShapeTypeHint(elementId: string): ShapeTypeHint;
-export function createDefaultShapeTypeHint(
-    elementIdOrTemplate: string | ({ elementTypeId: string } & Partial<ShapeTypeHint>)
-): ShapeTypeHint {
-    const template = typeof elementIdOrTemplate === 'string' ? { elementTypeId: elementIdOrTemplate } : elementIdOrTemplate;
-    return { repositionable: true, deletable: true, resizable: true, reparentable: true, ...template };
-}
-
-export function createDefaultEdgeTypeHint(template: { elementTypeId: string } & Partial<EdgeTypeHint>): EdgeTypeHint;
-export function createDefaultEdgeTypeHint(elementId: string): EdgeTypeHint;
-export function createDefaultEdgeTypeHint(elementIdOrTemplate: string | ({ elementTypeId: string } & Partial<EdgeTypeHint>)): EdgeTypeHint {
-    const template = typeof elementIdOrTemplate === 'string' ? { elementTypeId: elementIdOrTemplate } : elementIdOrTemplate;
-    return {
-        repositionable: true,
-        deletable: true,
-        routable: true,
-        sourceElementTypeIds: [
-            types.MANUAL_TASK,
-            types.AUTOMATED_TASK,
-            types.DECISION_NODE,
-            types.MERGE_NODE,
-            types.FORK_NODE,
-            types.JOIN_NODE,
-            types.CATEGORY
-        ],
-        targetElementTypeIds: [
-            types.MANUAL_TASK,
-            types.AUTOMATED_TASK,
-            types.DECISION_NODE,
-            types.MERGE_NODE,
-            types.FORK_NODE,
-            types.JOIN_NODE,
-            types.CATEGORY
-        ],
-        ...template
-    };
 }

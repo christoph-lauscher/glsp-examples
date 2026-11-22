@@ -37,13 +37,13 @@ export class WorkflowKeybindingContribution implements KeybindingContribution {
             command: WorkflowNavigationCommands.NEXT_NODE,
             context: WorkflowDiagramKeybindingContext.ID,
             keybinding: 'ctrl-4',
-            when: 'glspEditorHasSelectionOfType == task:automated || glspEditorHasSelectionOfType == task:manual'
+            when: 'glspEditorHasSelectionOfType == Task'
         });
         registry.registerKeybinding({
             command: WorkflowNavigationCommands.PREVIOUS_NODE,
             context: WorkflowDiagramKeybindingContext.ID,
             keybinding: 'ctrl-3',
-            when: 'glspEditorHasSelectionOfType == task:automated || glspEditorHasSelectionOfType == task:manual'
+            when: 'glspEditorHasSelectionOfType == Task'
         });
     }
 }

@@ -13,19 +13,23 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  ********************************************************************************/
-import { EdgeCreationChecker, GModelElement } from '@eclipse-glsp/server/';
+import { EdgeCreationChecker, GModelElement } from '@eclipse-glsp/server';
 import { injectable } from 'inversify';
-import { TaskNode } from './graph-extension';
 import { ModelTypes } from './util/model-types';
 
 @injectable()
 export class WorkflowEdgeCreationChecker implements EdgeCreationChecker {
     isValidSource(edgeType: string, sourceElement: GModelElement): boolean {
-        return edgeType !== ModelTypes.WEIGHTED_EDGE && sourceElement.type === ModelTypes.DECISION_NODE;
+        const definition = ModelTypes.METAMODEL_EDGES.find(edge => edge.id === edgeType);
+        return definition !== undefined && definition.sourceTypes.includes(sourceElement.type);
     }
+
     isValidTarget(edgeType: string, sourceElement: GModelElement, targetElement: GModelElement): boolean {
+        const definition = ModelTypes.METAMODEL_EDGES.find(edge => edge.id === edgeType);
         return (
-            targetElement instanceof TaskNode || targetElement.type === ModelTypes.FORK_NODE || targetElement.type === ModelTypes.JOIN_NODE
+            definition !== undefined &&
+            definition.sourceTypes.includes(sourceElement.type) &&
+            definition.targetTypes.includes(targetElement.type)
         );
     }
 }

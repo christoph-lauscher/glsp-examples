@@ -17,12 +17,28 @@ import 'reflect-metadata';
 
 import { configureELKLayoutModule } from '@eclipse-glsp/layout-elk';
 import { DefaultMcpDiagramModule, NodeMcpServerModule } from '@eclipse-glsp/server-mcp/lib/node';
-import { createAppModule, GModelStorage, Logger, SocketServerLauncher, WebSocketServerLauncher } from '@eclipse-glsp/server/node';
+import { ElementTypesProvider, McpLabelProvider, McpModelSerializer } from '@eclipse-glsp/server-mcp/lib/common';
+import { BindingTarget, createAppModule, GModelStorage, Logger, SocketServerLauncher, WebSocketServerLauncher } from '@eclipse-glsp/server/node';
 import { Container } from 'inversify';
 
 import { WorkflowLayoutConfigurator } from './layout/workflow-layout-configurator';
+import { MetamodelElementTypesProvider, MetamodelLabelProvider, MetamodelModelSerializer } from './metamodel-mcp';
 import { createWorkflowCliParser } from './workflow-cli-parser';
 import { WorkflowDiagramModule, WorkflowServerModule } from './workflow-diagram-module';
+
+class WorkflowMcpDiagramModule extends DefaultMcpDiagramModule {
+    protected override bindLabelProvider(): BindingTarget<McpLabelProvider> {
+        return MetamodelLabelProvider;
+    }
+
+    protected override bindModelSerializer(): BindingTarget<McpModelSerializer> {
+        return MetamodelModelSerializer;
+    }
+
+    protected override bindElementTypesProvider(): BindingTarget<ElementTypesProvider> {
+        return MetamodelElementTypesProvider;
+    }
+}
 
 async function launch(argv?: string[]): Promise<void> {
     const options = createWorkflowCliParser().parse(argv);
@@ -43,7 +59,7 @@ async function launch(argv?: string[]): Promise<void> {
     const serverModule = new WorkflowServerModule().configureDiagramModule(
         new WorkflowDiagramModule(() => GModelStorage),
         elkLayoutModule,
-        new DefaultMcpDiagramModule());           // per-session MCP services
+        new WorkflowMcpDiagramModule());           // per-session MCP services
 
     if (options.webSocket) {
         const launcher = appContainer.resolve(WebSocketServerLauncher);

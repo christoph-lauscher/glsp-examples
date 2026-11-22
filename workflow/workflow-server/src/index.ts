@@ -15,6 +15,8 @@
  ********************************************************************************/
 
 export * from './graph-extension';
+export * from './metamodel-model';
+export * from './metamodel-mcp';
 export * from './handler/create-activity-node-handler';
 export * from './handler/create-automated-task-handler';
 export * from './handler/create-category-handler';
@@ -24,6 +26,7 @@ export * from './handler/create-fork-node-handler';
 export * from './handler/create-fork-or-join-node-handler';
 export * from './handler/create-join-node-handler';
 export * from './handler/create-manual-task-handler';
+export * from './handler/create-metamodel-element-handlers';
 export * from './handler/create-merge-node-handler';
 export * from './handler/create-task-handler';
 export * from './handler/create-weighted-edge-handler';
