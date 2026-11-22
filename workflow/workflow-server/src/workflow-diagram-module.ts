@@ -29,7 +29,8 @@ import {
     NavigationTargetResolver,
     OperationHandlerConstructor,
     ServerModule,
-    SourceModelStorage
+    SourceModelStorage,
+    ToolPaletteItemProvider
 } from '@eclipse-glsp/server';
 import { injectable } from 'inversify';
 import {
@@ -50,7 +51,7 @@ import { WorkflowModelValidator } from './marker/workflow-model-validator';
 import { WorkflowNavigationTargetResolver } from './model/workflow-navigation-target-resolver';
 import { NextNodeNavigationTargetProvider } from './provider/next-node-navigation-target-provider';
 import { PreviousNodeNavigationTargetProvider } from './provider/previous-node-navigation-target-provider';
-import { WorkflowCommandPaletteActionProvider } from './provider/workflow-command-palette-action-provider';
+import { WorkflowCommandPaletteActionProvider, WorkflowToolPaletteItemProvider } from './provider/workflow-command-palette-action-provider';
 import { WorkflowContextMenuItemProvider } from './provider/workflow-context-menu-item-provider';
 import { WorkflowDiagramConfiguration } from './workflow-diagram-configuration';
 import { WorkflowEdgeCreationChecker } from './workflow-edge-creation-checker';
@@ -102,6 +103,10 @@ export class WorkflowDiagramModule extends GModelDiagramModule {
 
     protected override bindCommandPaletteActionProvider(): BindingTarget<CommandPaletteActionProvider> | undefined {
         return WorkflowCommandPaletteActionProvider;
+    }
+
+    protected override bindToolPaletteItemProvider(): BindingTarget<ToolPaletteItemProvider> | undefined {
+        return WorkflowToolPaletteItemProvider;
     }
 
     protected override bindLabelEditValidator(): BindingTarget<LabelEditValidator> | undefined {

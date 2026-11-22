@@ -13,7 +13,20 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  ********************************************************************************/
-import { CommandPaletteActionProvider, CreateEdgeOperation, CreateNodeOperation, DeleteElementOperation, GLabel, GModelElement, GNode, LabeledAction, ModelState, Point } from '@eclipse-glsp/server';
+import {
+    CommandPaletteActionProvider,
+    CreateEdgeOperation,
+    CreateNodeOperation,
+    DefaultToolPaletteItemProvider,
+    DeleteElementOperation,
+    GLabel,
+    GModelElement,
+    GNode,
+    LabeledAction,
+    ModelState,
+    Point
+} from '@eclipse-glsp/server';
+import { TriggerNodeCreationAction } from '@eclipse-glsp/protocol';
 import { inject, injectable } from 'inversify';
 import { ModelTypes } from '../util/model-types';
 
@@ -29,6 +42,17 @@ const NODE_LABELS = new Map<string, string>([
     [ModelTypes.UN_SDG_TARGET, 'UN Sustainable Development Goal Target'],
     [ModelTypes.SUSTAINABILITY_CAPABILITY, 'Sustainability Capability']
 ]);
+
+@injectable()
+export class WorkflowToolPaletteItemProvider extends DefaultToolPaletteItemProvider {
+    override create(
+        action: Parameters<DefaultToolPaletteItemProvider['create']>[0],
+        label: string
+    ): ReturnType<DefaultToolPaletteItemProvider['create']> {
+        const itemLabel = TriggerNodeCreationAction.is(action) ? NODE_LABELS.get(action.elementTypeId) ?? label : label;
+        return super.create(action, itemLabel);
+    }
+}
 
 @injectable()
 export class WorkflowCommandPaletteActionProvider extends CommandPaletteActionProvider {
