@@ -36,4 +36,11 @@ export class WorkflowGLSPSocketServerContribution extends GLSPSocketServerContri
             }
         };
     }
+
+    protected override processLogInfo(line: string): void {
+        super.processLogInfo(line);
+        if (line.startsWith('[GLSP-MCP-Server]:Ready.')) {
+            console.info(`${this.id}: ${line}`);
+        }
+    }
 }

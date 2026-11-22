@@ -14,6 +14,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  ********************************************************************************/
 import { Args, MaybePromise } from '@eclipse-glsp/client';
+import { McpInitializeParameters } from '@eclipse-glsp/protocol';
 import { BaseGLSPClientContribution } from '@eclipse-glsp/theia-integration/lib/browser';
 import { EnvVariablesServer } from '@theia/core/lib/common/env-variables';
 import { inject, injectable } from '@theia/core/shared/inversify';
@@ -31,6 +32,13 @@ export class WorkflowGLSPClientContribution extends BaseGLSPClientContribution {
 
     readonly id = WorkflowLanguage.contributionId;
     readonly fileExtensions = WorkflowLanguage.fileExtensions;
+
+    protected override async createInitializeParameters(): Promise<McpInitializeParameters> {
+        return {
+            ...await super.createInitializeParameters(),
+            mcpServer: {}
+        };
+    }
 
     protected override createInitializeOptions(): MaybePromise<Args | undefined> {
         return {
